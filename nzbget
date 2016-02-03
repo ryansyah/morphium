@@ -3,6 +3,7 @@
 # $FreeBSD: head/news/nzbget/files/nzbget.in 387515 2015-05-26 22:32:22Z madpilot $
 #
 # PROVIDE: nzbget
+# REQUIRE: DAEMON
 # KEYWORD: shutdown
 #
 # Add the following lines to /etc/rc.conf.local or /etc/rc.conf
@@ -19,9 +20,10 @@ rcvar=nzbget_enable
 load_rc_config ${name}
 
 : ${nzbget_enable:=NO}
+: ${nzbget_user:="_sabnzbd"}
 
 start_cmd="${name}_start"
-status_cmd="${command} -L S"
+status_cmd="${name}_status"
 stop_cmd="${name}_stop"
 command=/usr/local/bin/nzbget
 
@@ -40,6 +42,11 @@ nzbget_stop()
 	${command} -Q
 	# artificial sleep because stop is backgrounded
 	sleep 3
+}
+
+nzbget_status()
+{
+   ${command} -L S
 }
 
 run_rc_command "$1"
